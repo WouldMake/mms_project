@@ -51,7 +51,7 @@ public class ProjectService {
         List<Budget> budgets = this.budgetClient.listBudgets(destination);
         if (budgets.isEmpty())
         {
-            throw new BusinessException("There is not budgets for projects on this folder.");
+            throw new BusinessException("There are not budgets for projects on this folder.");
         }
         Budget budget = null;
         for (Budget budgetItem: budgets)
