@@ -3,12 +3,15 @@ package br.com.mesttra.project.controller;
 import br.com.mesttra.project.exception.BusinessException;
 import br.com.mesttra.project.model.Project;
 import br.com.mesttra.project.service.ProjectService;
+import br.com.mesttra.project.service.TokenService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +20,11 @@ import java.util.Optional;
 @RequestMapping("/projects")
 public class ProjectController {
     ProjectService projectService;
+    private final TokenService tokenService;
 
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, TokenService tokenService) {
         this.projectService = projectService;
+        this.tokenService = tokenService;
     }
 
     @PostMapping
@@ -31,7 +36,9 @@ public class ProjectController {
             @ApiResponse(code = 400, message = "Business exception: Secretariat not found, Secretariat is under investigation, There are not budgets for projects on this folder, There is no budget for projects on this folder"),
             @ApiResponse(code = 500, message = "Internal Error"),
     })
-    public Project addProject(@Valid @RequestBody Project project) throws BusinessException { return this.projectService.addProject(project); }
+    public Project addProject(@Valid @RequestBody Project project, HttpServletRequest request) throws BusinessException, AuthenticationException {
+        return this.projectService.addProject(project);
+    }
 
     @GetMapping
     @ApiOperation(value = "List projects",
